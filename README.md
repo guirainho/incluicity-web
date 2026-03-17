@@ -34,9 +34,6 @@ O pipeline é disparado automaticamente em dois cenários:
 - **Checkout:** Clonagem do repositório no runner do GitHub.
 - **Setup JDK & Node:** Configuração dos ambientes necessários para as tecnologias do projeto.
 - **Build Backend:** Execução do Maven para validar o código Java.
-- **Build Frontend:** Execução do script de build do React.
-
-Plataforma colaborativa para mapeamento de acessibilidade urbana.
 
 ## Licença
 Este projeto está licenciado sob a licença MIT. 
