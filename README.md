@@ -1,3 +1,5 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # IncluiCity Web 
 
 Plataforma colaborativa para mapeamento e avaliação de acessibilidade urbana.
@@ -18,7 +20,7 @@ docker-compose up --build
 
 ## CI/CD (Integração e Entrega Contínua)
 
-**Ferramenta Escolhida:** [GitHub Actions](https://github.com/features/actions)
+**Ferramenta Escolhida:** GitHub Actions
 
 ### Justificativa
 Optamos pelo GitHub Actions por ser uma solução nativa da plataforma, eliminando a necessidade de gerenciar servidores externos (como no Jenkins). Ele permite a automação completa do build e dos testes tanto para o ecossistema Java (Maven) quanto para o React (NPM) em um único workflow, facilitando a colaboração e garantindo que apenas código funcional chegue à branch principal.
@@ -33,8 +35,6 @@ O pipeline é disparado automaticamente em dois cenários:
 - **Setup JDK & Node:** Configuração dos ambientes necessários para as tecnologias do projeto.
 - **Build Backend:** Execução do Maven para validar o código Java.
 - **Build Frontend:** Execução do script de build do React.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Plataforma colaborativa para mapeamento de acessibilidade urbana.
 
