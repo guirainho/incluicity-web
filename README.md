@@ -35,6 +35,17 @@ O pipeline é disparado automaticamente em dois cenários:
 - **Setup JDK & Node:** Configuração dos ambientes necessários para as tecnologias do projeto.
 - **Build Backend:** Execução do Maven para validar o código Java.
 
+graph TD
+    A[Push/PR na branch main] --> B{GitHub Actions}
+    B --> C[Checkout do Código]
+    C --> D[Setup JDK 17 & Node 18]
+    D --> E[Instalação de Dependências]
+    E --> F[Build Backend - Maven]
+    F --> G[Build Frontend - NPM]
+    G --> H{Sucesso?}
+    H -- Sim --> I[Pronto para Deploy]
+    H -- Não --> J[Notificar Erro]
+
 ## Licença
 Este projeto está licenciado sob a licença MIT. 
 Consulte o arquivo [LICENSE](./LICENSE) para mais detalhes.
