@@ -42,8 +42,7 @@ O pipeline é disparado automaticamente em dois cenários:
 A AWS foi selecionada pela sua robustez e conformidade com padrões internacionais de segurança, permitindo o uso de instâncias EC2 escaláveis. Através de Security Groups, o acesso ao servidor é restrito apenas às portas essenciais (HTTP/SSH), garantindo a segurança e a alta disponibilidade do sistema (RNF05).
 
 ### Link de acesso
-O ambiente de demonstração está ativo e pode ser acessado em:
-https://www.google.com/search?q=http://100.53.127.156
+O ambiente de demonstração está ativo e pode ser acessado em: http://100.53.127.156
 
 ## Licença
 Este projeto está licenciado sob a licença MIT. 
