@@ -26,14 +26,29 @@ docker-compose up --build
 Optamos pelo GitHub Actions por ser uma solução nativa da plataforma, eliminando a necessidade de gerenciar servidores externos (como no Jenkins). Ele permite a automação completa do build e dos testes tanto para o ecossistema Java (Maven) quanto para o React (NPM) em um único workflow, facilitando a colaboração e garantindo que apenas código funcional chegue à branch principal.
 
 ### Fluxo do Pipeline Planejado
-O pipeline é disparado automaticamente em dois cenários:
-1. **Push em qualquer branch:** Executa o checkout do código, instalação de dependências e o **Build** (compilação) para validar a integridade do código.
-2. **Merge/Push na branch `main`:** Além do build, executa (futuramente) os testes unitários e o deploy automático para o ambiente de staging/produção.
+PUSH / PULL REQUEST -> [1] Checkout do código - > [2] Instalação de dependências -> [3] Lint / Análise estática -> [4] Testes unitários -> [5] Build / Compilação -> [6] Build de imagem Docker (Branch main) -> [7] Deploy em ambiente de staging (AWS)
 
-### Etapas Atuais:
-- **Checkout:** Clonagem do repositório no runner do GitHub.
-- **Setup JDK & Node:** Configuração dos ambientes necessários para as tecnologias do projeto.
-- **Build Backend:** Execução do Maven para validar o código Java.
+Descrição das Etapas:
+1) Quando roda: Em todos os gatilhos de Push ou Pull Request.
+O que aprova: Disponibiliza o código fonte do repositório para o ambiente isolado do GitHub Actions (Runner).
+
+2) Quando roda: Após o checkout.
+O que aprova: Valida se as bibliotecas do Maven (Java) e NPM (React) estão acessíveis e sem conflitos de versão.
+
+3) Quando roda: Após a instalação das dependências.
+O que aprova: Verifica a padronização do código e identifica vulnerabilidades de segurança estática antes da execução.
+
+4) Quando roda: Após a análise estática.
+O que aprova: Valida as regras de negócio de forma isolada, garantindo que novas alterações não quebraram funcionalidades existentes.
+
+5) Quando roda: Após a aprovação nos testes.
+O que aprova: Realiza a compilação final do projeto. Caso ocorram erros de sintaxe ou referências perdidas, o pipeline é interrompido.
+
+6) Quando roda: Apenas em merges ou pushes realizados na branch principal (main).
+O que aprova: Cria um contêiner padronizado que garante que a aplicação rode na AWS exatamente da mesma forma que rodou nos testes.
+
+7) Quando roda: Etapa final, após o build da imagem Docker.
+O que aprova: Disponibiliza a aplicação para acesso público através da infraestrutura configurada na AWS, garantindo a disponibilidade do sistema.
 
 ## Infraestrutura (IaaS)
 **Provedor Escolhido:** AWS (Amazon Web Services)
