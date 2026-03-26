@@ -2,7 +2,7 @@
 
 # IncluiCity Web 
 
-Plataforma colaborativa para mapeamento e avaliação de acessibilidade urbana.
+Plataforma colaborativa para mapeamento e avaliação de acessibilidade urbana
 
 ## Tecnologias
 - **Backend:** Java 17 (Spring Boot)
