@@ -12,7 +12,7 @@ Plataforma colaborativa para mapeamento e avaliação de acessibilidade urbana.
 
 ## Como Executar Localmente (Planejado)
 ```bash
-git clone [https://github.com/guilherme/incluicity-web.git](https://github.com/guilherme/incluicity-web.git)
+git clone [https://github.com/guirainho/incluicity-web.git](https://github.com/guirainho/incluicity-web.git)
 cd incluicity-web
 # Subir infraestrutura completa via Docker
 docker-compose up --build
