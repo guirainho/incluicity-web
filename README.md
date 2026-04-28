@@ -18,6 +18,56 @@ cd incluicity-web
 docker-compose up --build
 ```
 
+## Contratos de API (Endpoints)
+
+Base da API: `/api/v1`
+
+### `auth-service` - `:8081`
+Responsável pela gestão de usuários e segurança via JWT.
+
+| Método | Endpoint | Acesso | Descrição |
+|--------|----------|--------|-----------|
+| `POST` | `/auth/registrar` | Público | Cria uma nova conta de usuário |
+| `POST` | `/auth/login` | Público | Autentica o usuário e retorna o Token JWT |
+| `GET` | `/perfil/me` | Autenticado | Retorna os dados do usuário logado |
+| `PUT` | `/perfil/me` | Autenticado | Atualiza dados do próprio perfil |
+| `GET` | `/admin/usuarios` | ADMIN | Lista todos os usuários cadastrados |
+| `DELETE` | `/admin/usuarios/{id}` | ADMIN | Remove um usuário do sistema |
+
+### `location-service` - `:8082`
+Gerencia os pontos de interesse e o mapeamento de acessibilidade.
+
+| Método | Endpoint | Acesso | Descrição |
+|--------|----------|--------|-----------|
+| `GET` | `/pontos` | Público | Lista todos os pontos mapeados no mapa |
+| `GET` | `/pontos/{id}` | Público | Detalhes específicos de um ponto |
+| `POST` | `/pontos` | Autenticado | Cadastra um novo ponto de acessibilidade |
+| `PUT` | `/pontos/{id}` | ADMIN ou Autor | Edita informações de um ponto existente |
+| `DELETE` | `/pontos/{id}` | ADMIN | Remove um ponto do mapeamento |
+| `GET` | `/pontos/busca?tipo=` | Público | Filtra pontos por tipo (Calçada, Comércio, etc) |
+
+### `review-service` - `:8083`
+Gerencia as notas e comentários colaborativos sobre os locais.
+
+| Método | Endpoint | Acesso | Descrição |
+|--------|----------|--------|-----------|
+| `GET` | `/pontos/{pontoId}/avaliacoes` | Público | Lista todas as avaliações de um local |
+| `POST` | `/avaliacoes` | Autenticado | Envia uma nova avaliação (nota e comentário) |
+| `DELETE` | `/avaliacoes/{id}` | ADMIN ou Autor | Remove uma avaliação específica |
+| `GET` | `/avaliacoes/me` | Autenticado | Lista todas as avaliações feitas pelo usuário |
+
+## Administrador Padrão (Seed)
+
+Para fins de teste e avaliação do projeto, o sistema inicializa com um usuário administrativo padrão:
+
+| Campo | Valor |
+|-------|-------|
+| **E-mail** | `admin@incluicity.com.br` |
+| **Senha** | `admin123` |
+| **Role** | `ROLE_ADMIN` |
+
+> **NOTA DE SEGURANÇA:** Em ambiente de produção, a senha do administrador deve ser alterada no primeiro acesso e as portas dos microsserviços (`8081-8083`) devem ser restritas ao tráfego interno da VPC, sendo acessíveis externamente apenas via Gateway de API.
+
 ## CI/CD (Integração e Entrega Contínua)
 
 **Ferramenta Escolhida:** GitHub Actions
