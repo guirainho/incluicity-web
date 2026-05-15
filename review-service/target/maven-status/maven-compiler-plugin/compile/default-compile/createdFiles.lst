@@ -1,0 +1,4 @@
+br\com\incluicity\review\controller\AvaliacaoController.class
+br\com\incluicity\review\repository\AvaliacaoRepository.class
+br\com\incluicity\review\ReviewApplication.class
+br\com\incluicity\review\model\Avaliacao.class

@@ -1,0 +1,8 @@
+br\com\incluicity\auth\controller\TestController.class
+br\com\incluicity\auth\service\UsuarioService.class
+br\com\incluicity\auth\AuthApplication.class
+br\com\incluicity\auth\repository\UsuarioRepository.class
+br\com\incluicity\auth\controller\AuthController.class
+br\com\incluicity\auth\config\SecurityConfig.class
+br\com\incluicity\auth\model\Usuario.class
+br\com\incluicity\auth\service\JwtService.class

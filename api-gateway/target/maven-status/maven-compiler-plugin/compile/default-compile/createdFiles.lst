@@ -1,0 +1,4 @@
+br\com\incluicity\gateway\config\AuthenticationFilter$Config.class
+br\com\incluicity\gateway\config\CorsConfig.class
+br\com\incluicity\gateway\GatewayApplication.class
+br\com\incluicity\gateway\config\AuthenticationFilter.class

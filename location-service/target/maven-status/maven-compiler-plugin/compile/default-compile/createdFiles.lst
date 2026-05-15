@@ -1,0 +1,4 @@
+br\com\incluicity\location\model\Local.class
+br\com\incluicity\location\repository\LocalRepository.class
+br\com\incluicity\location\controller\LocalController.class
+br\com\incluicity\location\LocationApplication.class
