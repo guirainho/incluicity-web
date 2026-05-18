@@ -2,109 +2,97 @@
 
 # IncluiCity Web 
 
-Plataforma colaborativa para mapeamento e avaliação de acessibilidade urbana.
+Plataforma colaborativa baseada em microsserviços para o mapeamento, consulta e avaliação de acessibilidade urbana.
 
-## Tecnologias
-- **Backend:** Java 17 (Spring Boot)
-- **Frontend:** React (JavaScript/TypeScript)
-- **Banco de Dados:** PostgreSQL
-- **Infraestrutura:** Docker & GitHub Actions
+## Tecnologias e Arquitetura
+- **Backend:** Java 17 (Spring Boot 3), Spring Security, JWT, Gateway de API
+- **Frontend:** React, Axios (Interceptores de Requisições), Tailwind CSS, Lucide Icons
+- **Base de Dados:** PostgreSQL
+- **Infraestrutura & DevOps:** Docker, Docker Compose, JUnit 5, Mockito, GitHub Actions, AWS (EC2)
 
-## Como Executar Localmente (Planejado)
+---
+
+## Como Executar Localmente
+
+### Pré-requisitos
+* Docker e Docker Compose instalados
+* Ambiente Java 17 (opcional, caso pretenda compilar fora do contêiner)
+
+### Execução da Infraestrutura Completa
+Para descarregar o repositório e iniciar todos os microsserviços, base de dados e o frontend em ambiente isolado:
+
 ```bash
 git clone [https://github.com/guirainho/incluicity-web.git](https://github.com/guirainho/incluicity-web.git)
 cd incluicity-web
-# Subir infraestrutura completa via Docker
+
+# Subir toda a infraestrutura via Docker Compose
 docker-compose up --build
 ```
+Após o build, a aplicação estará acessível localmente através do ecrã do navegador no endereço do frontend.
 
-## Contratos de API (Endpoints)
+## Testes Automatizados (Backend)
+O sistema possui uma camada robusta de testes de unidade e de integração para garantir a estabilidade das regras de negócio e dos contratos da API, utilizando JUnit 5, Mockito e MockMvc.
+Para executar a suite de testes automatizados no microsserviço de localização, execute o seguinte comando na diretoria do serviço:
 
-Base da API: `/api/v1`
+```bash
+./mvnw test
+```
+Os testes cobrem cenários críticos como a criação de novos registos, listagem geral, pesquisa por ID e validação de erros (HTTP 404).
 
-### `auth-service` - `:8081`
-Responsável pela gestão de usuários e segurança via JWT.
 
-| Método | Endpoint | Acesso | Descrição |
-|--------|----------|--------|-----------|
-| `POST` | `/auth/registrar` | Público | Cria uma nova conta de usuário |
-| `POST` | `/auth/login` | Público | Autentica o usuário e retorna o Token JWT |
-| `GET` | `/perfil/me` | Autenticado | Retorna os dados do usuário logado |
-| `PUT` | `/perfil/me` | Autenticado | Atualiza dados do próprio perfil |
-| `GET` | `/admin/usuarios` | ADMIN | Lista todos os usuários cadastrados |
-| `DELETE` | `/admin/usuarios/{id}` | ADMIN | Remove um usuário do sistema |
 
-### `location-service` - `:8082`
-Gerencia os pontos de interesse e o mapeamento de acessibilidade.
+## Contratos de API (Endpoints reais)
+## 📑 Contratos da API (Endpoints Reais)
 
-| Método | Endpoint | Acesso | Descrição |
-|--------|----------|--------|-----------|
-| `GET` | `/pontos` | Público | Lista todos os pontos mapeados no mapa |
-| `GET` | `/pontos/{id}` | Público | Detalhes específicos de um ponto |
-| `POST` | `/pontos` | Autenticado | Cadastra um novo ponto de acessibilidade |
-| `PUT` | `/pontos/{id}` | ADMIN ou Autor | Edita informações de um ponto existente |
-| `DELETE` | `/pontos/{id}` | ADMIN | Remove um ponto do mapeamento |
-| `GET` | `/pontos/busca?tipo=` | Público | Filtra pontos por tipo (Calçada, Comércio, etc) |
+O tráfego externo é gerido de forma centralizada pelo API Gateway. As requisições privadas exigem a injeção automática do Token JWT no cabeçalho `Authorization: Bearer <token>` efetuada pelos interceptores do Axios no Frontend.
 
-### `review-service` - `:8083`
-Gerencia as notas e comentários colaborativos sobre os locais.
+### `auth-service` - Portal de Segurança
+Responsável pela gestão de utilizadores, autenticação e emissão de tokens.
 
 | Método | Endpoint | Acesso | Descrição |
 |--------|----------|--------|-----------|
-| `GET` | `/pontos/{pontoId}/avaliacoes` | Público | Lista todas as avaliações de um local |
-| `POST` | `/avaliacoes` | Autenticado | Envia uma nova avaliação (nota e comentário) |
-| `DELETE` | `/avaliacoes/{id}` | ADMIN ou Autor | Remove uma avaliação específica |
-| `GET` | `/avaliacoes/me` | Autenticado | Lista todas as avaliações feitas pelo usuário |
+| `POST` | `/auth/register` | Público | Cria uma nova conta de utilizador no sistema |
+| `POST` | `/auth/login` | Público | Autentica o utilizador e retorna o Token JWT |
 
-## Administrador Padrão (Seed)
+### `location-service` - Gestão de Pontos de Acessibilidade
+Responsável pelo mapeamento de espaços urbanos e critérios de acessibilidade.
 
-Para fins de teste e avaliação do projeto, o sistema inicializa com um usuário administrativo padrão:
+| Método | Endpoint | Acesso | Descrição |
+|--------|----------|--------|-----------|
+| `GET` | `/locations` | Autenticado | Lista todos os locais de acessibilidade cadastrados |
+| `GET` | `/locations/{id}` | Autenticado | Procura e retorna os detalhes específicos de um local pelo ID |
+| `POST` | `/locations` | Autenticado | Cadastra um novo ponto de interesse com notas e descrição |
+| `PUT` | `/locations/{id}` | Autenticado | Atualiza os dados de um local existente no sistema |
 
-| Campo | Valor |
+---
+
+## Utilizador Padrão para Avaliação (Seed)
+
+Para efeitos de testes e validação da banca acadêmica, o sistema inicializa automaticamente com as seguintes credenciais de acesso:
+
+| Campo | Valor de Teste |
 |-------|-------|
 | **E-mail** | `admin@incluicity.com.br` |
 | **Senha** | `admin123` |
-| **Role** | `ROLE_ADMIN` |
 
-> **NOTA DE SEGURANÇA:** Em ambiente de produção, a senha do administrador deve ser alterada no primeiro acesso e as portas dos microsserviços (`8081-8083`) devem ser restritas ao tráfego interno da VPC, sendo acessíveis externamente apenas via Gateway de API.
+## CI/CD (Integração Contínua)
 
-## CI/CD (Integração e Entrega Contínua)
+**Ferramenta:** GitHub Actions
 
-**Ferramenta Escolhida:** GitHub Actions
+### Justificativa Arquitetural
+A escolha do GitHub Actions baseia-se na sua integração nativa com o ecossistema Git, eliminando a infraestrutura dedicada de servidores de CI. O pipeline valida o ciclo de vida da aplicação a cada submissão de código (`push` ou `pull request`), garantindo que apenas compilações estáveis avancem.
 
-### Justificativa
-Optamos pelo GitHub Actions por ser uma solução nativa da plataforma, eliminando a necessidade de gerenciar servidores externos (como no Jenkins). Ele permite a automação completa do build e dos testes tanto para o ecossistema Java (Maven) quanto para o React (NPM) em um único workflow, facilitando a colaboração e garantindo que apenas código funcional chegue à branch principal.
-
-### Fluxo do Pipeline Planejado
-PUSH / PULL REQUEST -> [1] Checkout do código - > [2] Instalação de dependências -> [3] Lint / Análise estática -> [4] Testes unitários -> [5] Build / Compilação -> [6] Build de imagem Docker (Branch main) -> [7] Deploy em ambiente de staging (AWS)
-
-Descrição das Etapas:
-1) Quando roda: Em todos os gatilhos de Push ou Pull Request.
-O que aprova: Disponibiliza o código fonte do repositório para o ambiente isolado do GitHub Actions (Runner).
-
-2) Quando roda: Após o checkout.
-O que aprova: Valida se as bibliotecas do Maven (Java) e NPM (React) estão acessíveis e sem conflitos de versão.
-
-3) Quando roda: Após a instalação das dependências.
-O que aprova: Verifica a padronização do código e identifica vulnerabilidades de segurança estática antes da execução.
-
-4) Quando roda: Após a análise estática.
-O que aprova: Valida as regras de negócio de forma isolada, garantindo que novas alterações não quebraram funcionalidades existentes.
-
-5) Quando roda: Após a aprovação nos testes.
-O que aprova: Realiza a compilação final do projeto. Caso ocorram erros de sintaxe ou referências perdidas, o pipeline é interrompido.
-
-6) Quando roda: Apenas em merges ou pushes realizados na branch principal (main).
-O que aprova: Cria um contêiner padronizado que garante que a aplicação rode na AWS exatamente da mesma forma que rodou nos testes.
-
-7) Quando roda: Etapa final, após o build da imagem Docker.
-O que aprova: Disponibiliza a aplicação para acesso público através da infraestrutura configurada na AWS, garantindo a disponibilidade do sistema.
+### Fluxo do Pipeline
+1. **Checkout do Código:** Extração do código-fonte para o ambiente isolado do GitHub Runner.
+2. **Instalação de Dependências:** Resolução e validação de bibliotecas do Maven (Java) e pacotes do NPM (React).
+3. **Testes Automatizados:** Execução da suite de testes do JUnit 5. O pipeline é imediatamente interrompido caso ocorra alguma falha técnica.
+4. **Build e Compilação:** Geração dos artefactos finais de distribuição da aplicação.
+5. **Construção de Imagens Docker:** Empacotamento dos serviços em contêineres padronizados prontos para distribuição.
 
 ## Infraestrutura (IaaS)
 **Provedor Escolhido:** AWS (Amazon Web Services)
 
-### Justificativa
-A AWS foi selecionada pela sua robustez e conformidade com padrões internacionais de segurança, permitindo o uso de instâncias EC2 escaláveis. Através de Security Groups, o acesso ao servidor é restrito apenas às portas essenciais (HTTP/SSH), garantindo a segurança e a alta disponibilidade do sistema (RNF05).
+A arquitetura em produção utiliza instâncias Amazon EC2 configuradas de forma segura através de Security Groups, limitando as portas de comunicação pública ao estritamente necessário (HTTP/HTTPS) e protegendo o acesso à base de dados PostgreSQL. Os endereços públicos são fixados através de Elastic IPs.
 
 ### Link de acesso
 O ambiente de demonstração está ativo e pode ser acessado em: http://32.193.203.94
