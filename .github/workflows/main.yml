@@ -20,13 +20,9 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Grant execute permission for mvnw
-        working-directory: ./location-service
-        run: chmod +x mvnw
-
       - name: Run Tests with Maven
         working-directory: ./location-service
-        run: ./mvnw test
+        run: mvn test
 
   build-frontend:
     name: Build Frontend (React)
@@ -37,7 +33,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
           cache-dependency-path: incluicity-ui/package-lock.json
           
