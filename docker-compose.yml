@@ -75,15 +75,15 @@ services:
       - incluicity-net
 
   # Frontend em React
-#  frontend:
-#    build: ./frontend
-#    container_name: frontend-react
-#    ports:
- #     - "3000:3000"
-  #  depends_on:
-   #   - api-gateway
-    #networks:
-     # - incluicity-net
+  frontend:
+    build: ./incluicity-ui
+    container_name: incluicity-ui
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
+    networks:
+      - incluicity-net
 
 networks:
   incluicity-net:
