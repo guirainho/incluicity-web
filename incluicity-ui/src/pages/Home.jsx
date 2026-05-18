@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Search, MapPinned, AlertCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, MapPinned, AlertCircle, Plus } from "lucide-react";
 import api from "../services/api";
 import Navbar from "../components/Navbar";
 import LocationCard from "../components/Card";
@@ -32,7 +33,7 @@ export default function Home() {
   }, []);
 
   const filteredLocations = locations.filter((location) =>
-    location.name?.toLowerCase().includes(query.toLowerCase())
+    location.nome?.toLowerCase().includes(query.toLowerCase())
   );
 
   return (
@@ -40,13 +41,22 @@ export default function Home() {
       <Navbar />
 
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <header className="mb-6">
-          <h1 className="text-2xl font-bold text-slate-900">
-            Locais acessíveis
-          </h1>
-          <p className="mt-1 text-sm text-slate-500">
-            Explore espaços urbanos avaliados pela comunidade.
-          </p>
+        <header className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900">
+              Locais acessíveis
+            </h1>
+            <p className="mt-1 text-sm text-slate-500">
+              Explore espaços urbanos avaliados pela comunidade.
+            </p>
+          </div>
+          <Link
+            to="/add-location"
+            className="flex w-fit items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+          >
+            <Plus className="h-5 w-5" aria-hidden="true" />
+            Novo Local
+          </Link>
         </header>
 
         <div className="mb-6">

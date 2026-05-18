@@ -31,12 +31,7 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
-          <Link to="/locations/new">
-            <Button variant="accent">
-              <Plus className="h-4 w-4" aria-hidden="true" />
-              Adicionar local
-            </Button>
-          </Link>
+          
 
           <div className="flex items-center gap-2">
             <span className="hidden text-sm text-slate-600 sm:inline">

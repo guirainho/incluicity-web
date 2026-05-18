@@ -3,6 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import PrivateRoute from "./PrivateRoute";
 import Login from "../pages/Login";
 import Home from "../pages/Home";
+import LocationDetails from "../pages/LocationDetails";
+import AddLocation from "../pages/AddLocation";
 
 function PublicRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
@@ -31,6 +33,24 @@ export default function AppRoutes() {
           element={
             <PrivateRoute>
               <Home />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/locations/:id"
+          element={
+            <PrivateRoute>
+              <LocationDetails />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/add-location"
+          element={
+            <PrivateRoute>
+              <AddLocation />
             </PrivateRoute>
           }
         />

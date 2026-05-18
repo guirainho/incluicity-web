@@ -7,32 +7,44 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-backend:
-    name: Build Backend (Java)
+  test-backend:
+    name: Test Backend (location-service)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      
       - name: Set up JDK 17
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file src/backend/pom.xml # Placeholder: ajuste o caminho conforme necessário
+
+      - name: Grant execute permission for mvnw
+        working-directory: ./location-service
+        run: chmod +x mvnw
+
+      - name: Run Tests with Maven
+        working-directory: ./location-service
+        run: ./mvnw test
 
   build-frontend:
     name: Build Frontend (React)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
           cache: 'npm'
-          cache-dependency-path: src/frontend/package-lock.json # Placeholder
+          cache-dependency-path: incluicity-ui/package-lock.json
+          
       - name: Install dependencies
-        run: npm install --prefix src/frontend
+        working-directory: ./incluicity-ui
+        run: npm install
+        
       - name: Build React App
-        run: npm run build --prefix src/frontend
+        working-directory: ./incluicity-ui
+        run: npm run build
