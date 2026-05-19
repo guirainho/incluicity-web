@@ -41,29 +41,43 @@ Os testes cobrem cenários críticos como a criação de novos registos, listage
 
 
 
-## Contratos de API (Endpoints reais)
-## 📑 Contratos da API (Endpoints Reais)
+## 📑 Contratos da API
 
 O tráfego externo é gerido de forma centralizada pelo API Gateway. As requisições privadas exigem a injeção automática do Token JWT no cabeçalho `Authorization: Bearer <token>` efetuada pelos interceptores do Axios no Frontend.
 
-### `auth-service` - Portal de Segurança
-Responsável pela gestão de utilizadores, autenticação e emissão de tokens.
+### `auth-service` - Portal de Segurança e Usuários
+Responsável pela gestão de utilizadores, perfis, autenticação e emissão de tokens JWT.
 
 | Método | Endpoint | Acesso | Descrição |
 |--------|----------|--------|-----------|
 | `POST` | `/auth/register` | Público | Cria uma nova conta de utilizador no sistema |
 | `POST` | `/auth/login` | Público | Autentica o utilizador e retorna o Token JWT |
+| `GET`  | `/users/me` | Autenticado | Retorna os dados completos do perfil do utilizador logado |
+| `PUT`  | `/users/me` | Autenticado | Atualiza informações do próprio perfil (nome, preferências) |
+| `GET`  | `/admin/users` | Admin | Lista todos os utilizadores cadastrados na plataforma |
+| `DELETE`| `/admin/users/{id}`| Admin | Inativa ou remove um utilizador do sistema |
 
 ### `location-service` - Gestão de Pontos de Acessibilidade
-Responsável pelo mapeamento de espaços urbanos e critérios de acessibilidade.
+Responsável pelo mapeamento de espaços urbanos, estabelecimentos físicos e critérios de acessibilidade.
 
 | Método | Endpoint | Acesso | Descrição |
 |--------|----------|--------|-----------|
-| `GET` | `/locations` | Autenticado | Lista todos os locais de acessibilidade cadastrados |
-| `GET` | `/locations/{id}` | Autenticado | Procura e retorna os detalhes específicos de um local pelo ID |
+| `GET`  | `/locations` | Autenticado | Lista todos os locais de acessibilidade cadastrados |
+| `GET`  | `/locations/search` | Autenticado | Filtra locais por parâmetros (ex: tipo, cidade, acessibilidade) |
+| `GET`  | `/locations/{id}` | Autenticado | Procura e retorna os detalhes específicos de um local pelo ID |
 | `POST` | `/locations` | Autenticado | Cadastra um novo ponto de interesse com notas e descrição |
-| `PUT` | `/locations/{id}` | Autenticado | Atualiza os dados de um local existente no sistema |
+| `PUT`  | `/locations/{id}` | Autenticado | Atualiza os dados de um local existente no sistema |
+| `DELETE`| `/locations/{id}` | Admin | Remove um ponto do mapeamento que viole as diretrizes |
 
+### `review-service` - Sistema de Avaliações Colaborativas
+Responsável por gerir as notas, comentários e o feedback colaborativo da comunidade de PCDs sobre os locais.
+
+| Método | Endpoint | Acesso | Descrição |
+|--------|----------|--------|-----------|
+| `GET`  | `/locations/{locationId}/reviews` | Autenticado | Lista todas as avaliações e comentários de um local específico |
+| `POST` | `/locations/{locationId}/reviews` | Autenticado | Envia uma nova avaliação (nota de 1 a 5 e comentário) |
+| `GET`  | `/reviews/me` | Autenticado | Lista o histórico de todas as avaliações feitas pelo utilizador |
+| `DELETE`| `/reviews/{id}` | Admin/Autor | Remove uma avaliação específica por moderação ou escolha do autor |
 ---
 
 ## Utilizador Padrão para Avaliação (Seed)
