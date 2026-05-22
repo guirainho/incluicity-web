@@ -4,17 +4,19 @@ spring:
   cloud:
     gateway:
       globalcors:
-        cors-configurations:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
           '[/**]':
-            allowed-origins: "*"
-            allowed-methods:
+            allowedOrigins: "http://32.193.203.94:3000"
+            allowedMethods:
               - GET
               - POST
               - PUT
               - DELETE
               - OPTIONS
-            allowed-headers: "*"
-            allow-credentials: false
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
       routes:
         - id: auth-service
           uri: http://auth-service:8081
@@ -35,17 +37,3 @@ spring:
 
 server:
   port: 8080
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-
-springdoc:
-  swagger-ui:
-    urls:
-      - name: "1. Auth Service"
-        url: "/auth/v3/api-docs"
-      - name: "2. Location Service"
-        url: "/locations/v3/api-docs"
-      - name: "3. Review Service"
-        url: "/reviews/v3/api-docs"

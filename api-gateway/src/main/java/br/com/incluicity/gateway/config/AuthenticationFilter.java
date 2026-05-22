@@ -3,6 +3,7 @@ package br.com.incluicity.gateway.config;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -23,16 +24,19 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     public static class Config {
-        // Você pode adicionar propriedades de configuração aqui se necessário
     }
 
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
+            // LIBERAÇÃO PARA O CORS: Permite que requisições OPTIONS passem sem token
+            if (exchange.getRequest().getMethod() == HttpMethod.OPTIONS) {
+                return chain.filter(exchange);
+            }
+
             String path = exchange.getRequest().getURI().getPath();
 
-            // 1. ROTAS PÚBLICAS (Bypass)
-            // Permite acessar o login, cadastro e documentação sem exigir Token
+            // 1. ROTAS PÚBLICAS
             if (path.contains("/auth/login") || 
                 path.contains("/auth/register") || 
                 path.contains("/v3/api-docs") || 
@@ -40,30 +44,27 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 return chain.filter(exchange);
             }
 
-            // 2. VERIFICAÇÃO DO HEADER DE AUTORIZAÇÃO
+            // 2. VERIFICAÇÃO DO HEADER
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, HttpStatus.UNAUTHORIZED);
             }
 
             String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
 
-            // Valida se o formato é "Bearer <token>"
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 return onError(exchange, HttpStatus.UNAUTHORIZED);
             }
 
-            // Extrai apenas o token (removendo "Bearer ")
             String token = authHeader.substring(7);
 
             try {
-                // 3. VALIDAÇÃO DO JWT
+                // 3. VALIDAÇÃO JWT
                 Jwts.parserBuilder()
                     .setSigningKey(Keys.hmacShaKeyFor(SECRET.getBytes()))
                     .build()
                     .parseClaimsJws(token);
                 
             } catch (Exception e) {
-                // Se o token estiver expirado, for inválido ou a chave for diferente
                 return onError(exchange, HttpStatus.UNAUTHORIZED);
             }
 
@@ -71,7 +72,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         };
     }
 
-    // Método auxiliar para retornar erro de forma limpa no Spring WebFlux
     private Mono<Void> onError(ServerWebExchange exchange, HttpStatus status) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
