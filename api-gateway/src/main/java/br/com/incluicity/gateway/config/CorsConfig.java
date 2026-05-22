@@ -15,11 +15,16 @@ public class CorsConfig {
     public CorsWebFilter corsWebFilter() {
         CorsConfiguration corsConfig = new CorsConfiguration();
         
-        // Libera explicitamente o seu front-end
-        corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://127.0.0.1:5173"));
+        // Adicionamos o IP do seu frontend na AWS à lista VIP!
+        corsConfig.setAllowedOrigins(Arrays.asList(
+            "http://localhost:5173", 
+            "http://127.0.0.1:5173",
+            "http://32.193.203.94:3000" // <-- O IP da sua nuvem
+        ));
+        
         corsConfig.setMaxAge(3600L);
         corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        corsConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
+        corsConfig.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization", "Accept"));
         
         // Permite que o navegador envie o cabeçalho de Authorization
         corsConfig.setAllowCredentials(true);
