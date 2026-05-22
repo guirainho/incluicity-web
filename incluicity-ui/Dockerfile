@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando para rodar o app em modo de desenvolvimento
-CMD ["npm", "start"]
+CMD ["npm", "run", "dev", "--", "--host"]

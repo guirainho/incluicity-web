@@ -31,7 +31,6 @@ export default function Navbar() {
         </Link>
 
         <div className="flex items-center gap-3">
-          
 
           <div className="flex items-center gap-2">
             <span className="hidden text-sm text-slate-600 sm:inline">
