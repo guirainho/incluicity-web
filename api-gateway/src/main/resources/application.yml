@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://127.0.0.1:5173"
+              - "http://32.193.203.94:3000"
+            allowedMethods:
+              - "GET"
+              - "POST"
+              - "PUT"
+              - "DELETE"
+              - "OPTIONS"
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: auth-service
+          uri: http://auth-service:8081
+          predicates:
+            - Path=/auth/**
+        - id: location-service
+          uri: http://location-service:8082
+          predicates:
+            - Path=/locations, /locations/**
+          filters:
+            - AuthenticationFilter
+        - id: review-service
+          uri: http://review-service:8083
+          predicates:
+            - Path=/reviews, /reviews/**
+          filters:
+            - AuthenticationFilter
+
+server:
+  port: 8080
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: "1. Auth Service"
+        url: "/auth/v3/api-docs"
+      - name: "2. Location Service"
+        url: "/locations/v3/api-docs"
+      - name: "3. Review Service"
+        url: "/reviews/v3/api-docs"
