@@ -37,12 +37,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             String path = exchange.getRequest().getURI().getPath();
 
             // 1. ROTAS PÚBLICAS
-            if (path.contains("/auth/login") || 
-                path.contains("/auth/register") || 
-                path.contains("/v3/api-docs") || 
-                path.contains("/swagger-ui")) {
+            // Troque seu bloco de rotas públicas por este:
+            if (path.startsWith("/auth/login") || 
+                path.startsWith("/auth/register") || 
+                path.startsWith("/v3/api-docs") || 
+                path.startsWith("/swagger-ui")) {
                 return chain.filter(exchange);
-            }
+}
 
             // 2. VERIFICAÇÃO DO HEADER
             if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
