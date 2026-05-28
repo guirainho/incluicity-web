@@ -87,7 +87,7 @@ Para efeitos de testes e validação da banca acadêmica, o sistema inicializa a
 | Campo | Valor de Teste |
 |-------|-------|
 | **E-mail** | `admin@incluicity.com.br` |
-| **Senha** | `admin123` |
+| **Senha** | `admin` |
 
 ## CI/CD (Integração Contínua)
 
